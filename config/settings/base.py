@@ -92,21 +92,8 @@ DOMAIN_MODULES = [
     "modules.placement",
 ]
 
-INSTALLED_APPS = [
-    "django.contrib.contenttypes",
-    "django.contrib.auth",
-    "django.contrib.staticfiles",
-    "rest_framework",
-    "corsheaders",
-    "django_filters",
-    "drf_spectacular",
-    "fusion_auth",
-    "modules.directory",
-    "modules.accesscontrol",
-    "modules.placement",
-    "modules.elm",
-]
-
+INSTALLED_APPS = (DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+                  + PLATFORM_MODULES + DOMAIN_MODULES)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
