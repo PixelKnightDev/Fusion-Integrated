@@ -1,16 +1,31 @@
 from django.db import models
-from datetime import datetime
-from .leave_types import LeaveType, LeaveBalance
+
+from modules.elm.domain import (
+    APPLICANT_ACTION_REQUIRED,
+    APPROVED,
+    AWAITING_DIRECTOR_SELF_SANCTION,
+    AWAITING_ESTABLISHMENT_ROUTING,
+    AWAITING_FINAL_SANCTION,
+    AWAITING_SUBSTITUTE_RESPONSE,
+    AWAITING_UNIT_HEAD_REVIEW,
+    REJECTED,
+    WITHDRAWN,
+)
+
+from .leave_types import LeaveType
+
 
 class LeaveApplication(models.Model):
     STATUS_CHOICES = [
-        ('PENDING', 'Pending'),
-        ('RECOMMENDED', 'Recommended'),
-        ('NOT_RECOMMENDED', 'Not Recommended'),
-        ('APPROVED', 'Approved'),
-        ('REJECTED', 'Rejected'),
-        ('WITHDRAWN', 'Withdrawn'),
-        ('CANCELLED', 'Cancelled'),
+        (AWAITING_SUBSTITUTE_RESPONSE, "Awaiting Substitute Response"),
+        (APPLICANT_ACTION_REQUIRED, "Applicant Action Required"),
+        (AWAITING_UNIT_HEAD_REVIEW, "Awaiting Unit Head Review"),
+        (AWAITING_ESTABLISHMENT_ROUTING, "Awaiting Establishment Routing"),
+        (AWAITING_FINAL_SANCTION, "Awaiting Final Sanction"),
+        (AWAITING_DIRECTOR_SELF_SANCTION, "Awaiting Director Self Sanction"),
+        (APPROVED, "Approved"),
+        (REJECTED, "Rejected"),
+        (WITHDRAWN, "Withdrawn"),
     ]
 
     user_id = models.IntegerField()
@@ -20,8 +35,11 @@ class LeaveApplication(models.Model):
     purpose = models.TextField()
     station_leave_details = models.JSONField(default=dict, blank=True)
     substitute_id = models.IntegerField(null=True, blank=True)
-    status = models.CharField(max_length=20, default='PENDING', choices=STATUS_CHOICES)
-    
+    status = models.CharField(
+        max_length=40, default=AWAITING_UNIT_HEAD_REVIEW, choices=STATUS_CHOICES
+    )
+    unit_head_recommendation = models.CharField(max_length=20, blank=True, default="")
+
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
